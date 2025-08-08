@@ -1,25 +1,3 @@
-# OS
-.DS_Store
-
-# Dependencies / builds
 node_modules/
 dist/
-out/
-coverage/
-*.log
-
-# Electron artifacts
-*.dmg
-*.zip
-*.exe
-*.AppImage
-*.deb
-*.rpm
-*.snap
-*.asar
-*.blockmap
-*.msi
-*.app/
-
-# TypeScript
-*.tsbuildinfo
+.DS_Store
