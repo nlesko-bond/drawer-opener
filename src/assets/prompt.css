@@ -1,0 +1,48 @@
+/* prompt.css — only affects electron-prompt modals */
+body {
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f5f7fa;
+    padding: 20px;
+    margin: 0;
+  }
+  
+  label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #0e4a6b;
+    margin-bottom: 12px;
+    margin-top: 6px; /* extra space from top edge */
+    display: block;
+  }
+  
+  input[type="password"],
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+  
+  button {
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button[aria-label="OK"] {
+    background-color: #0e4a6b;
+    color: #fff;
+  }
+  
+  button[aria-label="Cancel"] {
+    background-color: #e5e7eb;
+    color: #333;
+  }
+  
+  button:hover {
+    filter: brightness(1.05);
+  }
