@@ -1,0 +1,53 @@
+{
+  "logFormatVersion": 1,
+  "jobId": "455297a5-ab86-422a-8c07-61c94ce4516b",
+  "status": "Invalid",
+  "statusSummary": "Archive contains critical validation errors",
+  "statusCode": 4000,
+  "archiveFilename": "drawer-opener.zip",
+  "uploadDate": "2025-08-11T20:07:40.560Z",
+  "sha256": "d019ddd3dab74c1a68e89feaf04ead98ccd578843fc97f053da4549a02b85a56",
+  "ticketContents": null,
+  "issues": [
+    {
+      "severity": "error",
+      "code": null,
+      "path": "drawer-opener.zip/drawer-opener.app/Contents/MacOS/drawer-opener",
+      "message": "The signature of the binary is invalid.",
+      "docUrl": "https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution/resolving_common_notarization_issues#3087735",
+      "architecture": "arm64"
+    },
+    {
+      "severity": "error",
+      "code": null,
+      "path": "drawer-opener.zip/drawer-opener.app/Contents/Frameworks/Electron Framework.framework/Electron Framework",
+      "message": "The signature of the binary is invalid.",
+      "docUrl": "https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution/resolving_common_notarization_issues#3087735",
+      "architecture": "arm64"
+    },
+    {
+      "severity": "error",
+      "code": null,
+      "path": "drawer-opener.zip/drawer-opener.app/Contents/Frameworks/ReactiveObjC.framework/ReactiveObjC",
+      "message": "The signature of the binary is invalid.",
+      "docUrl": "https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution/resolving_common_notarization_issues#3087735",
+      "architecture": "arm64"
+    },
+    {
+      "severity": "error",
+      "code": null,
+      "path": "drawer-opener.zip/drawer-opener.app/Contents/Frameworks/Squirrel.framework/Squirrel",
+      "message": "The signature of the binary is invalid.",
+      "docUrl": "https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution/resolving_common_notarization_issues#3087735",
+      "architecture": "arm64"
+    },
+    {
+      "severity": "error",
+      "code": null,
+      "path": "drawer-opener.zip/drawer-opener.app/Contents/Frameworks/Mantle.framework/Mantle",
+      "message": "The signature of the binary is invalid.",
+      "docUrl": "https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution/resolving_common_notarization_issues#3087735",
+      "architecture": "arm64"
+    }
+  ]
+}

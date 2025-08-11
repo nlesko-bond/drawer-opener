@@ -50,6 +50,23 @@ jobs:
           PY
           /usr/bin/openssl pkcs12 -in /tmp/cert.p12 -nokeys -passin pass:"$CSC_KEY_PASSWORD" >/dev/null
           echo "CSC_LINK=/tmp/cert.p12" >> "$GITHUB_ENV"
+      
+      - name: Notary auth check (mac)
+        if: matrix.os == 'macos-latest'
+        shell: bash
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+            set -euo pipefail
+            # tiny request that just authenticates
+            xcrun notarytool history \
+              --apple-id "$APPLE_ID" \
+              --team-id "$APPLE_TEAM_ID" \
+              --password "$APPLE_APP_SPECIFIC_PASSWORD" \
+              --limit 1 >/dev/null
+            echo "✅ notarytool auth OK"
 
       - name: Build (mac)
         if: matrix.os == 'macos-latest'
