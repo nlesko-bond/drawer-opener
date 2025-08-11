@@ -9,7 +9,7 @@
     "build:ts": "tsc",
     "copy:assets": "shx mkdir -p dist/assets && shx cp -f src/assets/* dist/assets/",
     "dev": "npm run build:ts && npm run copy:assets && electron .",
-    "build": "npm run build:ts && npm run copy:assets && electron-builder"
+    "build": "npm run build:ts && npm run copy:assets && electron-builder --publish=never"
   },
   "build": {
     "appId": "co.bondsports.draweropener",
