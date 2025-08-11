@@ -18,7 +18,17 @@
       "node_modules/**/*",
       "package.json"
     ],
-    "mac": { "category": "public.app-category.utilities", "target": "dmg" },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "dmg",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": {
+        "tool": "notarytool"
+      }
+    },
     "win": { "target": "nsis" },
     "extraResources": [
       { "from": "dist/assets", "to": "assets" }
