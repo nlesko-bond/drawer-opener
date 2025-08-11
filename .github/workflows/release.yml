@@ -31,6 +31,22 @@ jobs:
       - name: Install deps
         run: npm ci
 
+      - name: Sanity check signing P12 (mac)
+        if: matrix.os == 'macos-latest'
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ "${CSC_LINK}" != base64:* ]]; then
+            echo "CSC_LINK is missing the base64: prefix"; exit 1
+          fi
+          B64="${CSC_LINK#base64:}"
+          echo "$B64" | base64 -D -o cert.p12
+          # Validate it is a PKCS12 and password is correct (no output on success)
+          /usr/bin/openssl pkcs12 -in cert.p12 -nokeys -passin pass:"${CSC_KEY_PASSWORD}" >/dev/null
+          echo "PKCS12 looks valid."
+
       - name: Build (mac)
         if: matrix.os == 'macos-latest'
         env:
