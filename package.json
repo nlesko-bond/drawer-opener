@@ -12,28 +12,26 @@
     "build": "npm run build:ts && npm run copy:assets && electron-builder --publish=never"
   },
   "build": {
-    "appId": "co.bondsports.draweropener",
-    "files": [
-      "dist/**/*",
-      "node_modules/**/*",
-      "package.json"
-    ],
-    "mac": {
-      "category": "public.app-category.utilities",
-      "target": "dmg",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist",
-      "notarize": {
-        "tool": "notarytool"
-      }
-    },
-    "win": { "target": "nsis" },
-    "extraResources": [
-      { "from": "dist/assets", "to": "assets" }
-    ]
+  "appId": "co.bondsports.draweropener",
+  "files": [
+    "dist/**/*",
+    "node_modules/**/*",
+    "package.json"
+  ],
+  "mac": {
+    "category": "public.app-category.utilities",
+    "target": "dmg",
+    "hardenedRuntime": true,
+    "entitlements": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlements.mac.plist"
   },
+  "win": {
+    "target": "nsis"
+  },
+  "extraResources": [
+    { "from": "dist/assets", "to": "assets" }
+  ]
+},
   "dependencies": {
     "electron-prompt": "^1.7.0"
   },
