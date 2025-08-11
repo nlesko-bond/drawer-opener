@@ -3,11 +3,11 @@ name: Build & Release Drawer Opener
 on:
   push:
     tags:
-      - "v*"          # e.g. v0.2.0
-  workflow_dispatch:   # allow manual runs from Actions tab
+      - "v*"                # e.g. v0.5.0
+  workflow_dispatch:
 
 permissions:
-  contents: write      # needed to create releases & upload assets
+  contents: write
 
 jobs:
   build:
@@ -29,16 +29,31 @@ jobs:
           cache: "npm"
 
       - name: Install deps
-        run: npm install
+        run: npm ci
 
-      - name: Build app
+      - name: Build (mac)
+        if: matrix.os == 'macos-latest'
         env:
-          ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: "true"
-          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          # Signing cert & password
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          # Notarization via notarytool
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # Tell electron-builder not to publish by itself
           ELECTRON_BUILDER_SKIP_PUBLISH: "true"
+          CSC_IDENTITY_AUTO_DISCOVERY: "true"
         run: npm run build
 
-      - name: Archive macOS artifacts
+      - name: Staple (mac)
+        if: matrix.os == 'macos-latest'
+        run: |
+          xcrun stapler staple "dist/mac-arm64/drawer-opener.app" || true
+          # Stapling the DMG is optional; some macOS versions ignore it.
+          xcrun stapler staple "dist/drawer-opener-0.1.0-arm64.dmg" || true
+
+      - name: Archive build artifacts (mac)
         if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v4
         with:
@@ -46,9 +61,17 @@ jobs:
           path: |
             dist/*.dmg
             dist/*-mac.zip
+            dist/mac*/drawer-opener.app
           if-no-files-found: warn
 
-      - name: Archive Windows artifacts
+      - name: Build (windows)
+        if: matrix.os == 'windows-latest'
+        env:
+          ELECTRON_BUILDER_SKIP_PUBLISH: "true"
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: npm run build
+
+      - name: Archive build artifacts (windows)
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
