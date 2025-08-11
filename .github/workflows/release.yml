@@ -48,10 +48,16 @@ jobs:
 
       - name: Staple (mac)
         if: matrix.os == 'macos-latest'
+        shell: bash
         run: |
-          xcrun stapler staple "dist/mac-arm64/drawer-opener.app" || true
-          # Stapling the DMG is optional; some macOS versions ignore it.
-          xcrun stapler staple "dist/drawer-opener-0.1.0-arm64.dmg" || true
+          APP_PATH=$(echo dist/mac*/drawer-opener.app)
+          DMG_PATH=$(ls dist/*.dmg | head -n1 || true)
+          echo "Stapling: $APP_PATH"
+          xcrun stapler staple "$APP_PATH" || true
+          if [[ -n "$DMG_PATH" ]]; then
+            echo "Stapling DMG: $DMG_PATH"
+            xcrun stapler staple "$DMG_PATH" || true
+          fi
 
       - name: Archive build artifacts (mac)
         if: matrix.os == 'macos-latest'
