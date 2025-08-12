@@ -59,14 +59,14 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
-            set -euo pipefail
-            # tiny request that just authenticates
-            xcrun notarytool history \
-              --apple-id "$APPLE_ID" \
-              --team-id "$APPLE_TEAM_ID" \
-              --password "$APPLE_APP_SPECIFIC_PASSWORD" \
-              --limit 1 >/dev/null
-            echo "✅ notarytool auth OK"
+          set -euo pipefail
+          # This command requires valid credentials; it will exit non‑zero on 401.
+          xcrun notarytool history \
+            --apple-id "$APPLE_ID" \
+            --team-id "$APPLE_TEAM_ID" \
+            --password "$APPLE_APP_SPECIFIC_PASSWORD" \
+            --output-format json >/dev/null
+          echo "✅ notarytool auth OK"
 
       - name: Build (mac)
         if: matrix.os == 'macos-latest'

@@ -12,35 +12,28 @@
     "build": "npm run build:ts && npm run copy:assets && electron-builder --publish=never"
   },
   "build": {
-  "appId": "co.bondsports.draweropener",
-  "files": [
-    "dist/**/*",
-    "node_modules/**/*",
-    "package.json"
-  ],
-  "mac": {
-    "category": "public.app-category.utilities",
-    "target": "dmg",
-    "hardenedRuntime": true,
-    "entitlements": "build/entitlements.mac.plist",
-    "entitlementsInherit": "build/entitlements.mac.plist"
+    "appId": "co.bondsports.draweropener",
+    "files": ["dist/**/*", "node_modules/**/*", "package.json"],
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "dmg",
+      "hardenedRuntime": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": true
+    },
+    "win": { "target": "nsis" },
+    "extraResources": [{ "from": "dist/assets", "to": "assets" }]
   },
-  "dmg": { "sign": true },
-  "win": { "target": "nsis" },
-  "afterSign": "scripts/after-sign.js",
-  "extraResources": [
-    { "from": "dist/assets", "to": "assets" }
-  ]
-},
   "dependencies": {
     "electron-prompt": "^1.7.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "shx": "^0.4.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.0",
+    "electron": "^28.0.0",
     "electron-builder": "^26.0.0",
-    "electron": "^28.0.0"
+    "shx": "^0.3.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.0"
   }
 }
