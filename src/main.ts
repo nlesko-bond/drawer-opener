@@ -94,12 +94,12 @@ import {
   
       const win = new BrowserWindow({
         width: 520,
-        height: 210,
+        height: process.platform === "win32" ? 280 : 210,
         resizable: false,
         modal: true,
         alwaysOnTop: true,
         title: opts.title,
-        parent: settingsWin, // can be undefined; Electron accepts that
+        parent: settingsWin,
         webPreferences: { nodeIntegration: true, contextIsolation: false },
       });
   
@@ -633,9 +633,18 @@ import {
   function buildTray(_cfg: Config) {
     const { nativeImage } = require("electron");
   
-    // Create an “empty” icon and use an emoji as the title so it shows in the macOS menu bar
-    tray = new Tray(nativeImage.createEmpty());
-    tray.setTitle("💵"); // You could also try "🛒" or "🖨️" if you prefer
+    // Use a real icon on Windows; keep emoji title on macOS
+    const trayIcoPath = resolveAsset("tray.ico");
+  
+    if (process.platform === "win32" && trayIcoPath) {
+      // Windows: use the ICO file so the tray shows correctly
+      tray = new Tray(trayIcoPath);            // path is fine; Electron handles sizes inside the .ico
+    } else {
+      // macOS: keep text/emoji title approach
+      tray = new Tray(nativeImage.createEmpty());
+      tray.setTitle("💵");
+    }
+  
     tray.setToolTip("Drawer Opener");
   
     const menu = Menu.buildFromTemplate([
@@ -652,5 +661,14 @@ import {
       { type: "separator" },
       { label: "Quit", role: "quit" },
     ]);
+  
+    // Windows UX: left-click opens Settings (right-click shows context menu)
+    tray.on("click", async () => {
+      if (process.platform === "win32") {
+        const cfg = loadConfig();
+        if (await verifyAdminOrSet(cfg)) openSettings(cfg);
+      }
+    });
+  
     tray.setContextMenu(menu);
   }
