@@ -94,7 +94,7 @@ import {
   
       const win = new BrowserWindow({
         width: 520,
-        height: process.platform === "win32" ? 280 : 210,
+        height: process.platform === "win32" ? 275 : 210,
         resizable: false,
         modal: true,
         alwaysOnTop: true,
