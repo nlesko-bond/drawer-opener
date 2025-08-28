@@ -1,6 +1,6 @@
 {
   "name": "drawer-opener",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Tray app to open cash drawer via ESC/POS pulse",
   "author": "Bond Sports",
   "license": "MIT",
