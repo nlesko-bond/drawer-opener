@@ -12,11 +12,25 @@ import {
   import * as fs from "fs";
   import * as path from "path";
   import * as crypto from "crypto";
-  import * as net from "net";
-  
-  // ----------------------------
-  // Types & globals
-  // ----------------------------
+import * as net from "net";
+
+// Lazy-load to avoid bundling problems when USB isn't used
+let escpos: any = null;
+let EscposUSB: any = null;
+function getEscposUsb() {
+  if (!escpos) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    escpos = require("escpos");
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    EscposUSB = require("escpos-usb");
+    escpos.USB = EscposUSB;
+  }
+  return escpos;
+}
+
+// ----------------------------
+// Types & globals
+// ----------------------------
   type Config = {
     printerIp: string;       // e.g. 192.168.1.50 or "simulate"
     printerPort: number;     // usually 9100
@@ -439,7 +453,7 @@ import {
             <div class="grid">
               <div class="row">
                 <label>Printer IP</label>
-                <input id="ip" placeholder="e.g. 192.168.1.45 or simulate" />
+                <input id="ip" placeholder="e.g. 192.168.1.45 or usb or simulate" />
               </div>
               <div class="row">
                 <label>Printer Port</label>
@@ -549,17 +563,49 @@ import {
     }
   }
   
+  function sendDrawerKickUsb(cfg: Config): Promise<boolean> {
+    return new Promise((resolve) => {
+      try {
+        const e = getEscposUsb();
+        // If you know the Star USB VID/PID, you can pass them to target that device:
+        // const device = new e.USB(0xXXXX, 0xYYYY);
+        const device = new e.USB(); // auto-picks first ESC/POS device
+        device.open((openErr: any) => {
+          if (openErr) return resolve(false);
+
+          // ESC p m t1 t2
+          const m = cfg.drawerChannel & 0xff;
+          const t1 = cfg.pulseOn & 0xff;
+          const t2 = cfg.pulseOff & 0xff;
+          const bytes = Buffer.from([0x1B, 0x70, m, t1, t2]);
+
+          device.write(bytes, (writeErr: any) => {
+            try { device.close(); } catch {}
+            resolve(!writeErr);
+          });
+        });
+      } catch {
+        resolve(false);
+      }
+    });
+  }
+  
   function sendDrawerKick(cfg: Config): Promise<boolean> {
-    if (cfg.printerIp.trim().toLowerCase() === "simulate") {
+    const ip = (cfg.printerIp || "").trim().toLowerCase();
+
+    if (ip === "simulate") {
       return new Promise((resolve) => setTimeout(() => resolve(true), 150));
     }
-  
+    if (ip === "usb") {
+      return sendDrawerKickUsb(cfg);
+    }
+
+    // existing TCP/IP path (unchanged)
     return new Promise((resolve) => {
       try {
         const client = new net.Socket();
         client.setTimeout(3000);
         client.connect(cfg.printerPort, cfg.printerIp, () => {
-          // ESC p m t1 t2
           const bytes = Buffer.from([0x1B, 0x70, cfg.drawerChannel, cfg.pulseOn, cfg.pulseOff]);
           client.write(bytes, (err?: Error | null) => {
             client.end();
