@@ -31,6 +31,9 @@ jobs:
       - name: Install deps
         run: npm ci
 
+      - name: Rebuild native modules
+        run: npx electron-builder install-app-deps
+
       # macOS: decode P12 and expose CSC_LINK for electron-builder
       - name: Prep signing cert (mac)
         if: matrix.os == 'macos-latest'
